@@ -1,17 +1,3 @@
-"""
-app.py
-------
-سيرفر Flask بيشغل نفس منطق الـ RAG بتاع النوتبوك، وبيديك API
-عشان الفرونت (HTML/CSS/JS) يقدر يبعت سؤال ويستقبل إجابة + مصادر.
-
-تشغيل:
-    pip install -r requirements.txt
-    export GEMINI_API_KEY="ضعي المفتاح هنا"   (أو حطيه في ملف .env)
-    python app.py
-
-بعد كده افتحي المتصفح على: http://127.0.0.1:5000
-"""
-
 import os
 import re
 import json
@@ -24,7 +10,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
-# يقرأ ملف .env تلقائيًا (لو موجود) ويحط القيم اللي فيه كـ environment variables
 load_dotenv()
 
 # ============================================================
@@ -33,7 +18,7 @@ load_dotenv()
 
 DATA_DIR = "./data"
 CHROMA_DIR = "./chroma_db"
-EMBEDDING_MODEL_NAME = "multi-qa-mpnet-base-dot-v1"  # أفضل موديل من التقييم
+EMBEDDING_MODEL_NAME = "multi-qa-mpnet-base-dot-v1" 
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 80
 TOP_K = 3
@@ -73,8 +58,6 @@ SOURCES = [
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise RuntimeError(
-        "GEMINI_API_KEY مش موجود. حطيه كـ environment variable قبل التشغيل، "
-        "أو في ملف .env (شوفي .env.example)."
     )
 
 genai.configure(api_key=GEMINI_API_KEY)
@@ -109,12 +92,7 @@ gemini_model = genai.GenerativeModel(
 # ============================================================
 
 
-# (load_pdf_text القديمة اتستبدلت بـ load_pdf_pages فوق، اللي بترجع كل صفحة لوحدها
-#  عشان نقدر نحسب رقم الصفحة والسطر لكل chunk)
-
-
 def load_pdf_pages(filepath: str):
-    """يرجع نص كل صفحة لوحده (خام، من غير تنظيف) عشان نلاقي فيها رقم الصفحة والسطر بعدين."""
     pages = []
     with pdfplumber.open(filepath) as pdf:
         for page in pdf.pages:
@@ -123,7 +101,6 @@ def load_pdf_pages(filepath: str):
 
 
 def find_page_and_line(chunk_text: str, raw_pages: list):
-    """بيدور على أول 35 حرف من الـ chunk جوه صفحات الـ PDF الخام، ويرجع رقم الصفحة والسطر."""
     snippet = chunk_text[:35].strip()
     if not snippet:
         return 1, 1
@@ -161,14 +138,14 @@ def detect_language(text: str) -> str:
 
 
 def build_knowledge_base():
-    print("جاري تحميل الـ PDFs وبناء قاعدة المعرفة...")
+    print("Loading...")
 
     raw_source_texts = {}
-    raw_source_pages = {}  # يخزن صفحات كل PDF خام عشان نحسب منها رقم الصفحة/السطر
+    raw_source_pages = {}  
     for source in SOURCES:
         filepath = os.path.join(DATA_DIR, source["filename"])
         if not os.path.exists(filepath):
-            print(f"[تحذير] الملف غير موجود: {filepath}")
+            print(f"warning file not found: {filepath}")
             continue
         pages = load_pdf_pages(filepath)
         raw_source_pages[source["filename"]] = pages
@@ -204,7 +181,7 @@ def build_knowledge_base():
 
     print(f"تم إنشاء {len(all_chunks)} chunk.")
 
-    print(f"جاري تحميل موديل الـ embedding: {EMBEDDING_MODEL_NAME} ...")
+    print(f"Loading the embedding model: {EMBEDDING_MODEL_NAME} ...")
     embed_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
     client = chromadb.PersistentClient(path=CHROMA_DIR)
@@ -234,7 +211,7 @@ def build_knowledge_base():
         embeddings = embed_model.encode(texts, show_progress_bar=True).tolist()
         collection.add(ids=ids, embeddings=embeddings, documents=texts, metadatas=metadatas)
 
-    print(f"قاعدة المعرفة جاهزة ({collection.count()} chunk).")
+    print(f"ready ({collection.count()} chunk).")
     return embed_model, collection
 
 
@@ -275,12 +252,7 @@ def is_out_of_scope(hits, threshold=OUT_OF_SCOPE_THRESHOLD):
 
 
 def translate_to_english_for_search(question: str) -> str:
-    """
-    موديلات الـ embedding عندنا مدربة على الإنجليزي بس، فلو السؤال عربي
-    المسافة (distance) بتطلع بعيدة غلط وبيتصنف "خارج النطاق" وهو مش كده.
-    الحل: نترجم السؤال لإنجليزي *للبحث بس* (مش للإجابة)، والإجابة النهائية
-    هتفضل بنفس لغة السؤال الأصلي زي ما هي.
-    """
+   
     try:
         translator = genai.GenerativeModel(model_name="gemini-3.6-flash")
         response = translator.generate_content(
@@ -292,7 +264,6 @@ def translate_to_english_for_search(question: str) -> str:
         translated = response.text.strip()
         return translated if translated else question
     except Exception:
-        # لو الترجمة فشلت لأي سبب، نكمل بالسؤال الأصلي بدل ما نوقف كل حاجة
         return question
 
 
@@ -338,9 +309,6 @@ Answer clearly and concisely, citing sources."""
 
 def rag_answer(question: str, k: int = TOP_K):
     lang = detect_language(question)
-
-    # نبحث بنسخة إنجليزية من السؤال (لو كان عربي) عشان الـ embedding models
-    # عندنا مدربة إنجليزي بس، لكن الإجابة النهائية هتفضل بلغة السؤال الأصلي
     search_query = translate_to_english_for_search(question) if lang == "ar" else question
 
     hits = retrieve(search_query, k=k)
@@ -379,7 +347,7 @@ def ask():
     question = (data.get("question") or "").strip()
 
     if not question:
-        return jsonify({"error": "من فضلك اكتبي سؤال."}), 400
+        return jsonify({"error": "write your question please"}), 400
 
     try:
         result = rag_answer(question)
