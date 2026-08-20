@@ -9,11 +9,9 @@ const heroSearchInput = document.getElementById("heroSearchInput");
 const footerDisclaimer = document.getElementById("footerDisclaimer");
 const topNav = document.getElementById("topNav");
 
-// في الأول: مفيش محادثة لسه، فنخبي الـ composer السفلي والفوتر
 composer.classList.add("hidden");
 footerDisclaimer.style.display = "none";
 
-// شريط البحث في الـ hero بيبعت السؤال زي أي فورم تاني
 heroSearchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const q = heroSearchInput.value.trim();
@@ -23,7 +21,6 @@ heroSearchForm.addEventListener("submit", (e) => {
   composer.dispatchEvent(new Event("submit"));
 });
 
-// روابط الناف بار (Home فقط بترجع لأول الصفحة دلوقتي، الباقي placeholder)
 topNav.querySelectorAll(".topnav-link").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
@@ -42,7 +39,6 @@ function resetToHome() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// أيقونات الاقتراحات في حالة "خارج النطاق"
 const SUGGESTED_QUESTIONS = [
   {
     q: "What are the symptoms of DVT?",
@@ -81,7 +77,6 @@ const EXTERNAL_ICON = `<svg width="13" height="13" viewBox="0 0 22 22" fill="non
   <path d="M17.1193 10.01V18.7351C17.1193 19.2861 16.9004 19.8145 16.5108 20.204C16.1212 20.5936 15.5929 20.8125 15.0419 20.8125H2.57744C2.30463 20.8125 2.03448 20.7588 1.78244 20.6544C1.53039 20.55 1.30137 20.397 1.10846 20.2041C0.915547 20.0112 0.762523 19.7822 0.658124 19.5301C0.553724 19.2781 0.499994 19.0079 0.5 18.7351V6.27061C0.499981 5.99779 0.553702 5.72764 0.658097 5.47558C0.762491 5.22352 0.915513 4.9945 1.10843 4.80159C1.30134 4.60868 1.53036 4.45566 1.78242 4.35126C2.03447 4.24687 2.30462 4.19314 2.57744 4.19316H11.3025M14.3494 0.5H20.8125V6.96309M20.8125 0.5L8.70312 12.6094" stroke="#1F2B63" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
-// ---------- أزرار الاقتراحات الأولى (فوق) ----------
 document.querySelectorAll(".chip").forEach((chip) => {
   chip.addEventListener("click", () => {
     input.value = chip.dataset.q;
@@ -94,7 +89,6 @@ composer.addEventListener("submit", async (e) => {
   const question = input.value.trim();
   if (!question) return;
 
-  // أول سؤال: نخبي الـ hero وصندوق الاقتراحات، ونظهر الـ composer السفلي
   hero.style.display = "none";
   intro.style.display = "none";
   composer.classList.remove("hidden");
@@ -117,7 +111,7 @@ composer.addEventListener("submit", async (e) => {
     loadingTurn.remove();
 
     if (!res.ok) {
-      addPlainAnswer("حصل خطأ: " + (data.error || "غير معروف"));
+      addPlainAnswer("error: " + (data.error || "not defined"));
       return;
     }
 
@@ -128,7 +122,7 @@ composer.addEventListener("submit", async (e) => {
     }
   } catch (err) {
     loadingTurn.remove();
-    addPlainAnswer("تعذر الاتصال بالسيرفر. تأكدي إن app.py شغال.");
+    addPlainAnswer("failed");
   } finally {
     setLoading(false);
   }
@@ -188,7 +182,6 @@ function addPlainAnswer(text) {
 }
 
 function formatAnswerHTML(text) {
-  // يحول الأسطر اللي بتبدأ بـ - أو * لقائمة نقطية، والباقي فقرات
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
   let html = "";
   let inList = false;
@@ -230,7 +223,6 @@ function addAnswerBlock(answerText, sources) {
   card.innerHTML = formatAnswerHTML(answerText);
   turn.appendChild(card);
 
-  // إزالة تكرار المصادر بنفس الاسم
   const seen = new Set();
   const uniqueSources = (sources || []).filter((s) => {
     if (seen.has(s.source_name)) return false;
