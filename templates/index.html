@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DVT Care</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="app" id="app">
+
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-logo" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="dropGrad" x1="0" y1="0" x2="0" y2="34" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#2E9BE6"/>
+              <stop offset="1" stop-color="#1FB0A6"/>
+            </linearGradient>
+          </defs>
+          <path d="M17 2C17 2 5 15.5 5 22.5C5 28.85 10.373 34 17 34C23.627 34 29 28.85 29 22.5C29 15.5 17 2 17 2Z" fill="url(#dropGrad)"/>
+          <path d="M17 15V25M12 20H22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">DVT Care</span>
+      </div>
+
+      <nav class="topnav" id="topNav">
+        <a href="#" class="topnav-link active" data-nav="home">Home</a>
+        <a href="#" class="topnav-link" data-nav="about">About DVT</a>
+        <a href="#" class="topnav-link" data-nav="sources">Sources</a>
+        <a href="#" class="topnav-link" data-nav="contact">Contact</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="icon-btn" title="Account" aria-label="Account">
+          <svg width="22" height="24" viewBox="0 0 37 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.75 17.2327C0.75 10.9707 0.75 7.83971 1.48931 6.78639C2.2286 5.73306 5.17254 4.72534 11.0604 2.70988L12.1822 2.32591C15.2515 1.2753 16.786 0.75 18.375 0.75C19.964 0.75 21.4985 1.2753 24.5678 2.32591L25.6896 2.70988C31.5775 4.72534 34.5215 5.73306 35.2607 6.78639C36 7.83971 36 10.9707 36 17.2327C36 18.1784 36 19.2042 36 20.3165C36 31.3576 27.6986 36.7158 22.4902 38.991C21.0775 39.608 20.3711 39.9167 18.375 39.9167C16.3789 39.9167 15.6725 39.608 14.2597 38.991C9.0513 36.7158 0.75 31.3576 0.75 20.3165C0.75 19.2042 0.75 18.1784 0.75 17.2327Z" stroke="#1F2B63" stroke-width="1.5"/>
+            <path d="M18.375 18.375C20.5382 18.375 22.2917 16.6215 22.2917 14.4584C22.2917 12.2952 20.5382 10.5417 18.375 10.5417C16.2119 10.5417 14.4584 12.2952 14.4584 14.4584C14.4584 16.6215 16.2119 18.375 18.375 18.375Z" stroke="#1F2B63" stroke-width="1.5"/>
+            <path d="M26.2083 26.2084C26.2083 28.3715 26.2083 30.125 18.375 30.125C10.5416 30.125 10.5416 28.3715 10.5416 26.2084C10.5416 24.0452 14.0487 22.2917 18.375 22.2917C22.7011 22.2917 26.2083 24.0452 26.2083 26.2084Z" stroke="#1F2B63" stroke-width="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero: يظهر بس قبل ما المحادثة تبدأ -->
+    <section class="hero" id="hero">
+      <div class="hero-waves" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>DVT Care</h1>
+          <p class="hero-sub">Evidence-based information about Deep Vein Thrombosis</p>
+
+          <form class="hero-search" id="heroSearchForm">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="7" stroke="#55618E" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="#55618E" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="heroSearchInput" placeholder="What would you like to know about DVT?" autocomplete="off">
+          </form>
+        </div>
+
+        <img class="hero-illustration" src="{{ url_for('static', filename='leg-illustration.png') }}" alt="Illustration of a vein with a blood clot" />
+      </div>
+    </section>
+
+    <!-- Main scrollable area: either conversation or out-of-scope state -->
+    <main class="stage" id="stage">
+
+      <section class="intro" id="intro">
+        <p class="intro-label">Suggested questions</p>
+        <div class="suggestions-inline">
+          <button class="chip" data-q="What are the symptoms of DVT?">What are the symptoms of DVT?</button>
+          <button class="chip" data-q="What causes DVT?">What causes DVT?</button>
+          <button class="chip" data-q="How is DVT diagnosed?">How is DVT diagnosed?</button>
+        </div>
+        <div class="disclaimer-banner">
+          <span class="disclaimer-icon">!</span>
+          This tool provides general health information and is not a substitute for professional medical advice.
+        </div>
+      </section>
+
+      <section class="conversation" id="conversation" aria-live="polite"></section>
+
+    </main>
+
+    <!-- Composer: يظهر بس لما المحادثة تبدأ -->
+    <form class="composer" id="composer">
+      <button type="button" class="attach-btn" aria-label="Attach" tabindex="-1">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.877 4.30798L19.417 10.848C20.3924 11.8344 20.9377 13.1667 20.9338 14.5539C20.9299 15.9411 20.3772 17.2704 19.3964 18.2513C18.4155 19.2323 17.0863 19.7852 15.6992 19.7893C14.312 19.7933 12.9796 19.2482 11.993 18.273L4.03902 10.319C3.38234 9.66231 3.01343 8.77166 3.01343 7.84298C3.01343 6.9143 3.38234 6.02366 4.03902 5.36698C4.6957 4.71031 5.58634 4.34139 6.51502 4.34139C7.4437 4.34139 8.33434 4.71031 8.99102 5.36698L16.944 13.32C17.1067 13.4826 17.2357 13.6757 17.3237 13.8882C17.4117 14.1007 17.457 14.3285 17.457 14.5585C17.457 14.7885 17.4117 15.0163 17.3237 15.2288C17.2357 15.4413 17.1067 15.6343 16.944 15.797C16.7814 15.9596 16.5883 16.0886 16.3758 16.1767C16.1633 16.2647 15.9355 16.31 15.7055 16.31C15.4755 16.31 15.2478 16.2647 15.0352 16.1767C14.8227 16.0886 14.6297 15.9596 14.467 15.797L7.22002 8.54998" stroke="#8B8787" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <input
+        type="text"
+        id="questionInput"
+        placeholder="Ask anything about DVT..."
+        autocomplete="off"
+      />
+      <button type="submit" id="sendBtn" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <p class="footer-disclaimer" id="footerDisclaimer">
+      This is general health information, not medical advice. Consult a doctor for personal decisions.
+    </p>
+
+  </div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
