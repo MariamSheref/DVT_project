@@ -634,7 +634,6 @@ input:focus-visible {
   margin: 14px 0 4px;
 }
 
-/* الـ composer مخفي لحد ما أول سؤال يتبعت */
 .composer.hidden {
   display: none;
 }
